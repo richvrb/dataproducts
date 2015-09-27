@@ -1,0 +1,64 @@
+Dataproducts course project
+========================================================
+author: Richard Verbrugge
+date: 23-09-2015
+
+
+Miles per gallon predictor for cars
+
+
+- A prediction model and function for miles per Gallon based on the weight of the car and the amount of cylinders
+- Exploratory analysis for gears, type of shift and number of cylinders   
+- Analysis of the model (actual vs predicted miles per gallon for the dataset)
+
+Analysis 1 : miles per gallon versus weight of the car 
+========================================================
+  
+
+```{r, echo=FALSE}
+library(sjPlot)
+plot(mtcars$mpg, mtcars$wt ,type = "p")
+```
+***
+- The diagram suggest a strong relationship between MPG and Weight
+- It is not fully lineair and it suggest other variables need to be taken into account
+- Further analysis demonstrates that number of cylinders is highly relevant
+- Further analysis also demonstrates that number of gears and shift type are not highly relevant
+
+
+Analisys 2 : A relationship with cylinders (4, 6, 8)
+========================================================
+
+```{r, echo=FALSE}
+    coplot(mpg ~ wt | as.factor(cyl), data = mtcars, xlab = ("Car Weight"), ylab = ("Miles per gallon"), panel = panel.smooth, rows = 1)
+
+```
+***
+- The diagram shows that the relationship between weight and miles per gallon is different per the number of cylinders.
+- This variable should be included in the model.
+- a linear model is constructed based on weight and cylinders.
+
+
+Predicted values vs actual values
+========================================================
+```{r, echo=FALSE}
+model1 <-  glm(mpg~wt + cyl, data=mtcars)
+newData <- mtcars[,c(1,2,6,9,10)]
+model2 <- predict(model1,newdata=newData)
+model2 <- as.data.frame(model2)
+model2$actual <- mtcars$mpg
+tabel <- sjt.df(model2, describe=FALSE,hideProgressBar=TRUE)
+tabel$actual <- mtcars$mpg
+tabel
+```
+
+
+Conclusion
+========================================================
+```{r}
+
+```
+- Examing the predicted values for the dataset with the actual values shows that accuracy is for most models quite accurate
+- Additional analysis could be planned for a next release
+
+
